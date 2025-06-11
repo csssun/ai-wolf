@@ -1,0 +1,146 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>AI 狼人杀 - 月夜传说</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>AI 狼人杀 - 月夜传说</h1>
+    <div id="lobby-view" class="view active-view card">
+      <h2>游戏大厅</h2>
+      <div class="input-group">
+        <label for="username">昵称:</label>
+        <input type="text" id="username" placeholder="输入你的昵称" maxlength="12">
+      </div>
+      <div class="input-group" style="font-size:0.8em; margin-top: -10px;">
+        <label for="quick-join-code">快速加入:</label>
+        <input type="text" id="quick-join-code" placeholder="房间码" style="width: 80px; padding: 5px;">
+        <button id="quick-join-btn" style="padding: 5px 10px;">加入</button>
+      </div>
+
+      <hr />
+      <div class="lobby-actions">
+        <div class="action-card">
+          <h3>创建房间</h3>
+          <input type="text" id="room-name" placeholder="房间名称" maxlength="20">
+          <input type="password" id="create-password" placeholder="密码 (可选)">
+          <button id="create-btn">创建新房间</button>
+        </div>
+        <div class="action-card">
+          <h3>加入房间</h3>
+          <input type="text" id="join-code" placeholder="输入6位房间码" maxlength="6">
+          <input type="password" id="join-password" placeholder="密码 (如果需要)">
+          <button id="join-btn">加入指定房间</button>
+        </div>
+      </div>
+      <hr />
+      <h3>房间列表 <button id="refresh-list-btn" style="font-size: 0.8em; padding: 5px;">刷新</button></h3>
+      <p id="connection-status" style="text-align: center; color: var(--deep-red);"></p>
+      <div id="room-list-container">
+        <table id="room-list">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>代码</th>
+              <th>人数</th>
+              <th>密码</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="5">正在获取列表...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <hr />
+      <div class="instructions-card card">
+        <h3>📜 游戏说明 - 进阶版</h3>
+        <p>全程由 <strong>AI 主持人</strong> 引导。支持添加 <strong>AI玩家</strong>。</p>
+        <p class="rule-title">👥 人数与配置：</p>
+        <p>支持 <strong>6-12</strong> 人 (当前配置: 8, 10)。AI自动配置角色。</p>
+        <p class="rule-title">🎯 胜利条件：</p>
+        <ul>
+          <li><strong>好人阵营</strong>: 放逐所有狼人。</li>
+          <li><strong>狼人阵营</strong>: 狼人数量 ≥ 好人数量 (屠边)。</li>
+          <li><strong>情侣阵营❤️</strong>: 若丘比特连接的情侣存活，且所有其他玩家出局，则情侣单独获胜 (第三方)。</li>
+        </ul>
+        <p class="rule-title">🔄 游戏流程：</p>
+        <ol>
+          <li><strong>【设置夜】</strong>: 盗贼选牌，丘比特连情侣。</li>
+          <li><strong>【黑夜】</strong>🌙：按 [守卫->狼人->女巫(救/毒)->预言家] 顺序行动。按提示选择目标或【跳过】。</li>
+          <li><strong>【白天】</strong>☀️：宣布夜间结果 (可能触发猎人)。讨论。</li>
+          <li><strong>【投票】</strong>🗳️：投票放逐 (可能触发白痴、猎人)。平票/弃票多则无人出局。</li>
+          <li><strong>【猎人时刻】</strong>🔫: 若猎人因狼杀/投票出局，则选择目标开枪。</li>
+          <li>循环，直至胜利。结束后自动重置。</li>
+        </ol>
+        <p class="rule-title">🎭 新增角色：</p>
+        <ul>
+          <li><strong>盗贼:</strong> 第0夜在额外牌中选身份，若有狼必须选狼。</li>
+          <li><strong>丘比特:</strong> 第0夜连两人为情侣❤️。一人死，另一人殉情。</li>
+          <li><strong>守卫:</strong> 夜晚守护一人免于狼杀，不能连守同一人。</li>
+          <li><strong>女巫:</strong> 有解药(救被狼杀者)和毒药。每晚最多用一瓶。救人后不能用毒。</li>
+          <li><strong>猎人:</strong> 被狼杀或票死可开枪带走一人(毒死/殉情不能开枪)。</li>
+          <li><strong>白痴:</strong> 被票死时翻牌🤪免死，但失去投票权。</li>
+          <li>(基础: 狼人, 平民, 预言家)</li>
+        </ul>
+        <p class="rule-title">💡 提示：</p>
+        <p>按提示按钮选择或【跳过】。情侣间可见对方身份和聊天。出局玩家聊天仅出局者可见。</p>
+      </div>
+    </div>
+
+    <div id="room-view" class="view">
+      <div class="room-header">
+        <h2 id="room-title">房间: -- (代码: ---)</h2>
+        <button id="leave-btn" class="warn-btn">离开房间</button>
+      </div>
+      <div class="winner-banner" id="winner-banner"></div>
+      <div class="game-area">
+        <div class="panel player-panel card">
+          <h3>玩家列表 (<span id="player-count">0</span>/12)</h3>
+          <div id="player-list"></div>
+          <div id="my-role-info" class="role-info">
+            你的身份: <strong>等待中</strong>
+          </div>
+          <div class="game-controls">
+            <p>房主: <span id="host-name"></span> | 状态: <span id="game-state-display">等待中</span></p>
+            <button id="add-bot-btn" style="display: none;" title="添加一个AI玩家">添加AI玩家</button>
+            <button id="start-btn" style="display: none;">开始游戏</button>
+          </div>
+        </div>
+        <div class="panel message-panel card">
+          <h3>游戏进程 & 聊天</h3>
+          <div id="messages"></div>
+          <div id="action-area">
+            <p id="action-prompt"></p>
+            <div id="action-buttons"></div>
+            <span id="timer-display"></span>
+          </div>
+          <div class="chat-input">
+            <input type="text" id="chat-message" placeholder="输入消息..." maxlength="100">
+            <button id="send-chat-btn">发送</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="error-popup" class="modal">
+      <div class="modal-content card">
+        <span class="close-button">&times;</span>
+        <h3 id="error-title">提示</h3>
+        <p id="error-message-text"></p>
+      </div>
+    </div>
+  </div>
+  <script src="/static/client.js"></script>
+</body>
+
+</html>

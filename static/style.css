@@ -1,0 +1,904 @@
+/* static/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Garamond&display=swap');
+
+:root {
+  --bg-color: #1a1a2e;
+  /* 深夜蓝 */
+  --card-bg: #2a2a4a;
+  /* 稍浅背景 */
+  --text-color: #e0e0e0;
+  --gold-accent: #d4af37;
+  /* 金色 */
+  --deep-red: #8B0000;
+  /* 暗红 */
+  --wolf-red: #B22222;
+  --good-blue: #4682B4;
+  --border-color: #4a4a6a;
+  --hover-color: #40407a;
+  --button-bg: #5a3e5a;
+  /* 暗紫 */
+  --font-main: 'Garamond', 'Noto Serif SC', serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-main);
+  margin: 0;
+  padding: 10px;
+  line-height: 1.6;
+}
+
+strong {
+  color: var(--gold-accent);
+  font-weight: bold;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 25px 0;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--hover-color);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 10px auto;
+  background-color: var(--card-bg);
+  border: 1px solid var(--gold-accent);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 15px 25px;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--gold-accent);
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 2.2em;
+  text-shadow: 2px 2px 4px #000;
+  margin-top: 10px;
+}
+
+h3 {
+  text-align: left;
+  padding-left: 5px;
+}
+
+.view {
+  display: none;
+  padding: 10px;
+}
+
+.view.active-view {
+  display: block;
+}
+
+.card {
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Lobby */
+.input-group {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.input-group label {
+  margin-right: 10px;
+  color: var(--gold-accent);
+  font-size: 1.1em;
+}
+
+.lobby-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.action-card {
+  flex: 1;
+  min-width: 250px;
+  padding: 15px;
+  background: var(--card-bg);
+  border: 1px dashed var(--border-color);
+  text-align: center;
+}
+
+.action-card h3 {
+  text-align: center;
+  border: none;
+  padding: 0;
+  margin-bottom: 10px;
+}
+
+.action-card input,
+.input-group input {
+  display: inline-block;
+  margin: 8px auto;
+  width: calc(80% - 20px);
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  background-color: #333355;
+  color: var(--text-color);
+  border-radius: 4px;
+  font-family: var(--font-main);
+  font-size: 1em;
+}
+
+input::placeholder {
+  color: #888;
+}
+
+button {
+  padding: 8px 18px;
+  background-color: var(--button-bg);
+  color: white;
+  border: 1px solid var(--gold-accent);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: var(--font-main);
+  font-size: 1em;
+  margin: 4px;
+}
+
+button:hover:not(:disabled) {
+  background-color: var(--hover-color);
+  box-shadow: 0 0 8px var(--gold-accent);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-color: var(--border-color);
+}
+
+button.warn-btn {
+  background-color: var(--deep-red);
+  border-color: var(--text-color);
+}
+
+button.warn-btn:hover:not(:disabled) {
+  background-color: #a00;
+  box-shadow: 0 0 8px white;
+}
+
+button.action-player-btn {
+  background-color: var(--card-bg);
+  border: 1px solid var(--gold-accent);
+  color: var(--gold-accent);
+  margin: 3px;
+  padding: 6px 10px;
+  font-size: 0.95em;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button.action-player-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background-color: rgba(212, 175, 55, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+}
+
+button.action-player-btn:hover::before {
+  width: 100%;
+  height: 100%;
+}
+
+button.action-player-btn:hover:not(:disabled) {
+  background-color: var(--gold-accent);
+  color: var(--bg-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(212, 175, 55, 0.4);
+}
+
+/* style for selected action button, also applies to skip via .selected */
+#action-buttons button.selected {
+  background-color: var(--deep-red);
+  border-color: white;
+  color: white;
+  box-shadow: 0 0 8px white;
+}
+
+/* make sure the warn-btn (skip) also shows selected state */
+button.warn-btn.selected {
+  box-shadow: 0 0 10px white;
+  border-color: white;
+  background-color: #a00;
+  /* slightly brighter red */
+}
+
+
+button.action-player-btn:disabled {
+  border-color: grey;
+  color: grey;
+}
+
+#room-list-container {
+  max-height: 250px;
+  overflow-y: auto;
+  background: var(--bg-color);
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+#room-list-container+h3 {
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  text-align: center;
+  font-size: 0.95em;
+}
+
+th:first-child,
+td:first-child {
+  text-align: left;
+  padding-left: 15px;
+}
+
+th:last-child,
+td:last-child {
+  text-align: center;
+}
+
+th {
+  background-color: var(--button-bg);
+  color: var(--gold-accent);
+  position: sticky;
+  /* make header stick */
+  top: 0;
+  z-index: 1;
+}
+
+tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+tbody tr:hover {
+  background-color: var(--hover-color);
+}
+
+/* Room View */
+.room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  margin-bottom: 10px;
+}
+
+.room-header h2 {
+  margin-bottom: 0;
+  border: none;
+  text-align: left;
+  flex-grow: 1;
+  padding: 0;
+}
+
+/* Winner Banner */
+.winner-banner {
+  display: none;
+  /* Hidden by default */
+  background-color: #4CAF50;
+  /* Green - JS will override color */
+  color: white;
+  text-align: center;
+  padding: 12px;
+  margin: 0 15px 15px 15px;
+  border-radius: 5px;
+  font-size: 1.3em;
+  font-weight: bold;
+  border: 2px solid var(--gold-accent);
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+}
+
+.game-area {
+  display: flex;
+  gap: 15px;
+  min-height: 550px;
+  flex-wrap: wrap;
+}
+
+.panel {
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.player-panel {
+  flex: 1 1 280px;
+  /* grow, shrink, basis */
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-panel {
+  flex: 2 1 450px;
+  /* grow, shrink, basis */
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+#player-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  border: 1px solid var(--border-color);
+  padding: 5px;
+  border-radius: 4px;
+  background-color: #111;
+}
+
+.player-entry {
+  padding: 6px 10px;
+  margin-bottom: 4px;
+  background: var(--bg-color);
+  border-left: 3px solid var(--gold-accent);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 3px;
+  font-size: 0.98em;
+}
+
+.player-entry.self {
+  border-left-color: cyan;
+  background-color: rgba(0, 255, 255, 0.1);
+  /* cyan tint */
+  font-weight: bold;
+}
+
+.player-entry.dead {
+  border-left-color: grey;
+  color: grey;
+  text-decoration: line-through;
+  opacity: 0.7;
+  background-color: #222;
+}
+
+.player-entry span:first-child {
+  margin-right: 10px;
+  flex-grow: 1;
+}
+
+.player-entry .player-role-tag {
+  font-size: 0.85em;
+  color: #ccc;
+  font-weight: normal;
+  flex-shrink: 0;
+}
+
+.player-entry.dead .player-role-tag {
+  color: grey;
+  text-decoration: none;
+  /* Don't strike through role */
+}
+
+/* Matches #my-role-info */
+.role-info {
+  background: #111;
+  padding: 10px;
+  margin-top: 5px;
+  color: var(--gold-accent);
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid var(--gold-accent);
+  border-radius: 4px;
+  font-size: 0.95em;
+}
+
+.role-info small {
+  color: var(--text-color);
+  font-weight: normal;
+  font-size: 0.85em;
+}
+
+.game-controls {
+  margin-top: auto;
+  /* push to bottom */
+  text-align: center;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-color);
+  font-size: 0.9em;
+}
+
+.game-controls p {
+  font-size: 0.9em;
+  color: #ccc;
+  margin: 5px 0;
+}
+
+.game-controls span {
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+#host-name {
+  color: var(--gold-accent);
+}
+
+#messages {
+  flex-grow: 1;
+  /* height: 300px; fallback */
+  min-height: 200px;
+  overflow-y: auto;
+  background-color: #111;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 8px;
+  scroll-behavior: smooth;
+  font-size: 0.95em;
+}
+
+/* Message Types - matches JS/Backend msgClass */
+.msg p {
+  margin: 4px 0;
+}
+
+.msg .sender {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.msg-chat {
+  color: #fff;
+}
+
+.msg-chat .sender {
+  color: lightblue;
+}
+
+.msg-ghost_chat {
+  color: #888;
+  font-style: italic;
+}
+
+.msg-ghost_chat .sender {
+  color: #aaa;
+}
+
+.msg-ai_host {
+  color: var(--gold-accent);
+  font-weight: bold;
+  background-color: rgba(212, 175, 55, 0.1);
+  padding: 2px 0;
+}
+
+.msg-ai_host .sender {
+  color: white;
+}
+
+.msg-ai_private {
+  color: cyan;
+  font-weight: bold;
+  background-color: #003344;
+  padding: 2px;
+}
+
+.msg-ai_private .sender {
+  color: white;
+}
+
+.msg-ai_private_important {
+  color: yellow;
+  background-color: rgba(180, 0, 0, 0.5);
+  /* Dark red bg for seer */
+  font-weight: bold;
+  padding: 4px;
+  border: 1px solid yellow;
+  border-radius: 3px;
+  margin: 5px 0;
+}
+
+.msg-ai_private_important .sender {
+  color: white;
+}
+
+.msg-system {
+  color: lightgreen;
+  font-style: italic;
+}
+
+.msg-system .sender {
+  color: white;
+}
+
+#action-area {
+  background-color: rgba(255, 255, 0, 0.1);
+  /* Yellow tint */
+  border: 1px dashed var(--gold-accent);
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 8px;
+  text-align: center;
+  min-height: 40px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+/* Action-specific styling */
+#action-area[data-action-type="kill"] {
+  background-color: rgba(178, 34, 34, 0.2);
+  border-color: var(--wolf-red);
+}
+
+#action-area[data-action-type="check"] {
+  background-color: rgba(75, 0, 130, 0.2);
+  border-color: #9370DB;
+}
+
+#action-area[data-action-type="heal"] {
+  background-color: rgba(34, 139, 34, 0.2);
+  border-color: #228B22;
+}
+
+#action-area[data-action-type="poison"] {
+  background-color: rgba(139, 0, 139, 0.2);
+  border-color: #8B008B;
+}
+
+#action-area[data-action-type="guard"] {
+  background-color: rgba(70, 130, 180, 0.2);
+  border-color: #4682B4;
+}
+
+#action-area[data-action-type="shoot"] {
+  background-color: rgba(139, 69, 19, 0.2);
+  border-color: #D2691E;
+}
+
+#action-area[data-action-type="vote"] {
+  background-color: rgba(255, 215, 0, 0.1);
+  border-color: var(--gold-accent);
+}
+
+#action-area[data-action-type="link_1"],
+#action-area[data-action-type="link_2"] {
+  background-color: rgba(255, 20, 147, 0.2);
+  border-color: #FF69B4;
+}
+
+#action-area[data-action-type="choose_role"] {
+  background-color: rgba(255, 99, 71, 0.2);
+  border-color: #FF6347;
+}
+
+#action-prompt {
+  color: yellow;
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 1.1em;
+  display: inline-block;
+  /* allow timer next to it */
+  vertical-align: middle;
+}
+
+#timer-display {
+  /* color set by JS */
+  font-weight: bold;
+  margin-left: 10px;
+  font-size: 1.1em;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#action-buttons {
+  margin-top: 5px;
+  min-height: 30px;
+}
+
+.chat-input {
+  display: flex;
+}
+
+#chat-message {
+  flex-grow: 1;
+  margin-right: 8px;
+  padding: 8px;
+}
+
+#send-chat-btn {
+  padding: 8px 15px;
+}
+
+/* Modal - matches #error-popup */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(3px);
+}
+
+.modal-content {
+  background-color: var(--bg-color);
+  margin: 10% auto;
+  padding: 25px;
+  border: 1px solid var(--gold-accent);
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+  width: 90%;
+  max-width: 450px;
+  position: relative;
+  text-align: center;
+  border-radius: 8px;
+}
+
+/* matches #error-title */
+.modal-content h3 {
+  margin-top: 0;
+  border: none;
+  padding: 0;
+  color: var(--deep-red);
+}
+
+/* matches #error-message-text */
+.modal-content p {
+  color: var(--text-color);
+  margin-top: 15px;
+}
+
+.close-button {
+  color: #aaa;
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: var(--gold-accent);
+}
+
+/* Game Instructions - matches index.html */
+.instructions-card {
+  margin-top: 10px;
+  text-align: left;
+  font-size: 0.9em;
+  background-color: var(--card-bg);
+  border-style: dashed;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.instructions-card h3 {
+  text-align: center;
+  color: var(--text-color);
+  border-bottom-color: var(--border-color);
+  padding-bottom: 5px;
+}
+
+.instructions-card .rule-title {
+  font-weight: bold;
+  color: var(--gold-accent);
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.instructions-card ul,
+.instructions-card ol {
+  margin-top: 0;
+  margin-left: 15px;
+  padding-left: 15px;
+}
+
+.instructions-card li {
+  margin-bottom: 6px;
+}
+
+.instructions-card a {
+  color: cyan;
+  text-decoration: none;
+}
+
+.instructions-card a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  body {
+    padding: 2px;
+  }
+
+  h1 {
+    font-size: 1.6em;
+  }
+
+  h2,
+  h3 {
+    font-size: 1.2em;
+  }
+
+  .container {
+    padding: 5px 10px;
+    margin: 5px auto;
+    border-radius: 0;
+  }
+
+  .game-area {
+    flex-direction: column;
+    gap: 10px;
+    min-height: auto;
+  }
+
+  .player-panel,
+  .message-panel {
+    min-width: auto;
+    flex-basis: auto;
+  }
+
+  #messages {
+    height: 250px;
+    /* Fixed height might be better on mobile */
+    min-height: 150px;
+    flex-grow: 0;
+    /* Prevent message panel from taking all space */
+  }
+
+  #player-list {
+    height: 200px;
+    /* Fixed height might be better on mobile */
+    min-height: 100px;
+    flex-grow: 0;
+    /* Prevent player list from taking all space */
+  }
+
+  .lobby-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .action-card {
+    min-width: auto;
+    padding: 10px;
+  }
+
+  .action-card input {
+    width: calc(95% - 20px);
+  }
+
+  .room-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 5px;
+  }
+
+  .room-header h2 {
+    font-size: 1.1em;
+    width: 100%;
+    /* Ensure h2 takes full width for centering */
+    text-align: center;
+    /* Center title on mobile */
+    margin-bottom: 5px;
+  }
+
+  .room-header button {
+    margin-top: 5px;
+    align-self: center;
+    /* Center button on mobile */
+  }
+
+  #room-list-container,
+  .instructions-card {
+    max-height: 180px;
+  }
+
+  table,
+  .player-entry,
+  .game-controls,
+  .instructions-card {
+    font-size: 0.85em;
+  }
+
+  th,
+  td {
+    padding: 4px;
+  }
+
+  th:first-child,
+  td:first-child {
+    padding-left: 8px;
+  }
+
+  button {
+    padding: 6px 12px;
+    font-size: 0.9em;
+  }
+
+  .modal-content {
+    padding: 15px;
+    margin-top: 20%;
+  }
+
+  #action-prompt,
+  #timer-display {
+    font-size: 0.9em;
+  }
+
+  button.action-player-btn {
+    padding: 4px 8px;
+    font-size: 0.85em;
+  }
+
+  .input-group input {
+    width: auto;
+    /* Adjust input width on mobile */
+  }
+
+  #quick-join-code {
+    width: 70px !important;
+    /* Ensure quick join code input is small */
+  }
+
+
+  .winner-banner {
+    font-size: 1em;
+    padding: 8px;
+    margin: 0 5px 10px 5px;
+  }
+}
