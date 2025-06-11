@@ -3,9 +3,6 @@ import { Server } from "socket_io/mod.ts";
 import { serveFile } from "$std/http/file_server.ts";
 import { load } from "$std/dotenv/mod.ts";
 import { cryptoRandomString } from "https://deno.land/x/crypto_random_string@1.1.0/mod.ts";
-import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { extname, join } from "https://deno.land/std@0.224.0/path/mod.ts";
-
 // 在文件顶部添加，替换之前的 import { shuffle } 语句
 function shuffle<T>(array: T[]): T[] {
   const result = [...array];
@@ -20,8 +17,20 @@ await load({ export: true });
 const kv = await Deno.openKv();
 console.log("Deno KV initialized.");
 
-// 静态资源目录
-const staticDir = "./static";
+// 用 io.handler 包裹你的静态资源逻辑
+const handler = io.handler(async (req) => {
+  const path = new URL(req.url).pathname;
+  try {
+    if (path === "/" || path === "/index.html")
+      return await serveFile(req, `${baseDir}templates/index.html`);
+    if (path.startsWith("/static/") && !path.includes('..'))
+      return await serveFile(req, `${baseDir}static/${path.substring(8)}`);
+  } catch (e) {
+    console.error(e);
+    return new Response("Error", { status: 500 });
+  }
+  return new Response("Not Found", { status: 404 });
+});
 
 // --- Constants ---
 const MIN_PLAYERS = 6; // Adjusted
@@ -235,47 +244,6 @@ async function promptAction(code: string, action: ActionType, message: string, t
 function clearPrompt(to_sids: string | string[]) {
   io.to(to_sids).emit('prompt_action', null);
 }
-
-// 静态文件响应
-async function serveStaticFile(req: Request) {
-  const url = new URL(req.url);
-  if (url.pathname.startsWith("/static/")) {
-    const filePath = join(staticDir, url.pathname.replace("/static/", ""));
-    try {
-      const file = await Deno.readFile(filePath);
-      const ext = extname(filePath);
-      const contentType = {
-        ".css": "text/css",
-        ".js": "application/javascript",
-      }[ext] || "application/octet-stream";
-      return new Response(file, {
-        headers: { "content-type": contentType },
-      });
-    } catch {
-      return new Response("Not found", { status: 404 });
-    }
-  }
-  return null;
-}
-
-// 主服务逻辑
-serve(async (req) => {
-  // 静态文件优先
-  const staticResp = await serveStaticFile(req);
-  if (staticResp) return staticResp;
-
-  // 首页
-  if (new URL(req.url).pathname === "/") {
-    const html = await Deno.readFile("./index.html");
-    return new Response(html, {
-      headers: { "content-type": "text/html; charset=utf-8" },
-    });
-  }
-
-  // TODO: 其他API和Socket.io逻辑...
-
-  return new Response("Not found", { status: 404 });
-});
 
 async function updateRoomClients(code: string) {
   const room = await getRoom(code);
