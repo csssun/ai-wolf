@@ -1113,7 +1113,7 @@ io.on("connection", (socket) => {
 
   socket.on("join_room", async (data) => {
     const { username, room_code, password } = data;
-    const code = (room_code || '').toUpperCase();
+    const code = String(room_code || '').toUpperCase();
     const sid = socket.id;
     if (!username || !code || await getPlayerRoomCode(sid)) return;
     const roomEntry = await getRoomEntry(code);
