@@ -11,3 +11,5 @@ RUN deno cache main.ts
 
 # Render 会传递 PORT 环境变量，这里用它
 ENV PORT=800
+
+CMD ["deno", "run", "-A", "--unstable", "main.ts"]
