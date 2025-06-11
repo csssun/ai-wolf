@@ -1231,5 +1231,5 @@ const handler = io.handler(async (req) => {
   return new Response("Not Found", { status: 404 });
 });
 
-console.log("Server starting on http://localhost:8000");
-Deno.serve({ port: 8000, hostname: "0.0.0.0" }, handler);
+const port = parseInt(Deno.env.get("PORT") ?? "8000");
+Deno.serve({ port, hostname: "0.0.0.0" }, handler);
