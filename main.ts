@@ -17,21 +17,6 @@ await load({ export: true });
 const kv = await Deno.openKv();
 console.log("Deno KV initialized.");
 
-// 用 io.handler 包裹你的静态资源逻辑
-const handler = io.handler(async (req) => {
-  const path = new URL(req.url).pathname;
-  try {
-    if (path === "/" || path === "/index.html")
-      return await serveFile(req, `${baseDir}templates/index.html`);
-    if (path.startsWith("/static/") && !path.includes('..'))
-      return await serveFile(req, `${baseDir}static/${path.substring(8)}`);
-  } catch (e) {
-    console.error(e);
-    return new Response("Error", { status: 500 });
-  }
-  return new Response("Not Found", { status: 404 });
-});
-
 // --- Constants ---
 const MIN_PLAYERS = 6; // Adjusted
 const MAX_PLAYERS = 12; // Adjusted
